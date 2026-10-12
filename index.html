@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strefa Pomysłów – Portfolio AI Technikum</title>
+    <style>
+        /* ==========================================================================
+           ZMIENNE I RESET STYLÓW (High Contrast & Clean Architecture)
+           ========================================================================== */
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --accent-color: #38bdf8;
+            --accent-hover: #0284c7;
+            --success-color: #4ade80;
+            --error-color: #f87171;
+            --focus-outline: #facc15;
+            --border-radius: 12px;
+            --transition: all 0.25s ease-in-out;
+            --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Skip link dla ułatwienia dostępności klawiaturą */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 10px;
+            background: var(--focus-outline);
+            color: #000;
+            padding: 8px 16px;
+            font-weight: bold;
+            z-index: 100;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus {
+            top: 10px;
+        }
+
+        /* Dostępność - Fokus klawiatury */
+        :focus-visible {
+            outline: 3px solid var(--focus-outline);
+            outline-offset: 3px;
+        }
+
+        /* ==========================================================================
+           NAGŁÓWEK I NAWIGACJA
+           ========================================================================== */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 2px solid #475569;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ==========================================================================
+           GLÓWNA ZAWARTOŚĆ
+           ========================================================================== */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            padding: 2rem 1rem;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-radius: var(--border-radius);
+            border: 1px solid #475569;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 0.3rem;
+        }
+
+        /* ==========================================================================
+           SEKCJA PROJEKTÓW
+           ========================================================================== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .project-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid #475569;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
+        }
+
+        .badge {
+            align-self: flex-start;
+            background-color: #0284c7;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .project-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .project-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .interactive-box {
+            background-color: var(--bg-primary);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: auto;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            color: #fff;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            background-color: #000;
+        }
+
+        /* ==========================================================================
+           SEKCJA FAQ
+           ========================================================================== */
+        .faq-section {
+            margin-bottom: 4rem;
+        }
+
+        .faq-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        summary {
+            padding: 1.2rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: "+";
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        details[open] summary::after {
+            content: "−";
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid #475569;
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-content {
+            padding: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================================
+           SEKCJA QUIZU
+           ========================================================================== */
+        .quiz-section {
+            background-color: var(--bg-secondary);
+            border: 1px solid #475569;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question p {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quiz-option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--bg-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quiz-option-label:hover {
+            border-color: var(--accent-color);
+        }
+
+        .quiz-option-label input[type="radio"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--accent-color);
+        }
+
+        #quiz-result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .result-success {
+            background-color: rgba(74, 222, 128, 0.15);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .result-error {
+            background-color: rgba(248, 113, 113, 0.15);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        /* ==========================================================================
+           STOPKA
+           ========================================================================== */
+        footer {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid #475569;
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ==========================================================================
+           RESPONSYWNOŚĆ (Media Queries dla Telefonów)
+           ========================================================================== */
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                gap: 0.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-section {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Przejdź do głównej treści</a>
+
+    <!-- NAGŁÓWEK -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <span>⚡ Strefa Pomysłów</span>
+            </a>
+            <nav aria-label="Nawigacja główna">
+                <ul>
+                    <li><a href="#projekty">Projekty</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#quiz">Sprawdź się</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- GŁÓWNA ZAWARTOŚĆ -->
+    <main id="main-content">
+
+        <!-- HERO -->
+        <section class="hero">
+            <h1>Innowacje AI Tworzone Przez Uczniów Technikum</h1>
+            <p>Poznaj pierwsze praktyczne wdrożenia sztucznej inteligencji przygotowane przez nasz zespół szkolny. Przetwarzanie tekstu, generowanie oprawy graficznej i dynamiczna synteza dźwięku.</p>
+        </section>
+
+        <!-- SEKCJA PROJEKTÓW -->
+        <section id="projekty">
+            <h2 class="section-title">Nasze Projekty AI</h2>
+            <div class="projects-grid">
+
+                <!-- PROJEKT 1: TEKST -->
+                <article class="project-card">
+                    <div>
+                        <span class="badge">Sztuczna Inteligencja / NLP</span>
+                        <h3>1. Generator Asystenta Tekstowego</h3>
+                        <p>Aplikacja szkolna analizująca wprowadzony słowo-klucz i generująca natychmiastowe propozycje skróconych notatek edukacyjnych.</p>
+                    </div>
+                    <div class="interactive-box">
+                        <label for="text-input" style="font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Wpisz hasło edukacyjne:</label>
+                        <input type="text" id="text-input" placeholder="np. AI, Technikum, Algorytm" style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #475569; background: var(--bg-secondary); color: #fff; margin-bottom: 0.5rem;">
+                        <div id="text-output" style="font-size: 0.85rem; color: var(--accent-color); min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                            [Wynik generowania pojawi się tutaj]
+                        </div>
+                    </div>
+                    <button class="btn" onclick="generateTextDemo()">Wygeneruj Notatkę</button>
+                </article>
+
+                <!-- PROJEKT 2: GRAFIKA -->
+                <article class="project-card">
+                    <div>
+                        <span class="badge">Computer Vision / Grafika</span>
+                        <h3>2. Symulator Generowania Grafiki</h3>
+                        <p>Narzędzie generujące unikalne układy geometryczne i abstrakcyjne tekstury na bazie wybranego wzorca za pomocą algorytmu Canvas.</p>
+                    </div>
+                    <div class="interactive-box">
+                        <canvas id="ai-canvas" width="200" height="120" aria-label="Wygenerowana podglądowa grafika AI"></canvas>
+                    </div>
+                    <button class="btn" onclick="generateGraphicDemo()">Wygeneruj Nową Grafikę</button>
+                </article>
+
+                <!-- PROJEKT 3: DŹWIĘK -->
+                <article class="project-card">
+                    <div>
+                        <span class="badge">Audio / Synteza Dźwięku</span>
+                        <h3>3. Generator Sygnału Audio</h3>
+                        <p>Eksperymentalne narzędzie tworzące proste, bezpieczne dla ucha sekwencje dźwiękowe z wykorzystaniem natywnego interfejsu Web Audio API.</p>
+                    </div>
+                    <div class="interactive-box">
+                        <div id="audio-status" style="font-size: 0.9rem; color: var(--text-muted);">
+                            Kliknij poniższy przycisk, aby wygenerować i odtworzyć krótki dźwięk testowy.
+                        </div>
+                    </div>
+                    <button class="btn" onclick="playAudioDemo()">Odtwórz Dźwięk AI</button>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- SEKCJA FAQ -->
+        <section id="faq" class="faq-section">
+            <h2 class="section-title">Często Zadawane Pytania (FAQ)</h2>
+
+            <details class="faq-item">
+                <summary>Czym jest projekt „Strefa Pomysłów”?</summary>
+                <div class="faq-content">
+                    <p>To przestrenna inicjatywa uczniów technikum mająca na celu tworzenie i prezentację prostych, sprawnie działających aplikacji wykorzystujących algorytmy sztucznej inteligencji oraz podstawy programowania sieciowego.</p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Czy prezentowane projekty wymagają połączenia z internetem lub API?</summary>
+                <div class="faq-content">
+                    <p>Nie! Zgodnie z założeniami projektu wszystkie zaprezentowane wersje demonstracyjne działają całkowicie lokalnie w przeglądarce użytkownika bez użycia zewnętrznych bibliotek, instalacji czy połączeń API.</p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Jakie technologie zostały użyte do stworzenia strony?</summary>
+                <div class="faq-content">
+                    <p>Strona w całości została napisana w standardowym HTML5, nowoczesnym CSS (Flexbox, Grid, zmienne CSS) oraz czystym JavaScript (HTML5 Canvas, Web Audio API).</p>
+                </div>
+            </details>
+        </section>
+
+        <!-- SEKCJA QUIZU -->
+        <section id="quiz" class="quiz-section">
+            <h2 class="section-title">Sprawdź swoją wiedzę o AI</h2>
+            <form id="quiz-form" onsubmit="evaluateQuiz(event)">
+                
+                <div class="quiz-question">
+                    <p>1. Co oznacza skrót NLP w kontekście sztucznej inteligencji?</p>
+                    <div class="quiz-options">
+                        <label class="quiz-option-label">
+                            <input type="radio" name="q1" value="a" required>
+                            <span>a) Natural Language Processing (Przetwarzanie Języka Naturalnego)</span>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="q1" value="b">
+                            <span>b) New Logic Programming (Programowanie nowej logiki)</span>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="q1" value="c">
+                            <span>c) Network Level Protocol (Protokół poziomu sieci)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <p>2. Które rozwiązanie pozwala generować dźwięk w przeglądarce bez bibliotek zewnętrznych?</p>
+                    <div class="quiz-options">
+                        <label class="quiz-option-label">
+                            <input type="radio" name="q2" value="a" required>
+                            <span>a) Web Audio API</span>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="q2" value="b">
+                            <span>b) HTML CSS Grid</span>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="q2" value="c">
+                            <span>c) REST API Framework</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="max-width: 250px;">Sprawdź Odpowiedzi</button>
+            </form>
+
+            <div id="quiz-result" aria-live="polite"></div>
+        </section>
+
+    </main>
+
+    <!-- STOPKA -->
+    <footer>
+        <p>&copy; 2026 Technikum - Strefa Pomysłów. Projekt edukacyjny przygotowany przez uczniów.</p>
+        <p>Wszystkie dane na stronie mają charakter demonstracyjny (fikcyjny).</p>
+    </footer>
+
+    <!-- SKRYPTY JAVASCRIPT -->
+    <script>
+        // ==========================================
+        // 1. INICJALIZACJA DANYCH PO ZAŁADOWANIU
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Narysuj początkową grafikę na canvasie
+            generateGraphicDemo();
+        });
+
+        // ==========================================
+        // 2. PROJEKT 1: GENERATOR TEKSTU (Lokalny)
+        // ==========================================
+        function generateTextDemo() {
+            const input = document.getElementById('text-input').value.trim();
+            const output = document.getElementById('text-output');
+
+            if (!input) {
+                output.textContent = '⚠️ Wpisz najpierw słowo kluczowe w polu powyżej!';
+                output.style.color = 'var(--error-color)';
+                return;
+            }
+
+            const templates = [
+                `Model AI sklasyfikował pojęcie "${input}" jako priorytetowe w zagadnieniach technikum.`,
+                `Wygenerowano syntezę: Pamiętaj, że "${input}" odgrywa kluczową rolę w rozwoju systemów IT.`,
+                `Analiza tekstu ukończona: Wynik związany ze słowem "${input}" wykazuje 98% dokładności logiki.`
+            ];
+
+            const randomIndex = Math.floor(Math.random() * templates.length);
+            output.textContent = templates[randomIndex];
+            output.style.color = 'var(--success-color)';
+        }
+
+        // ==========================================
+        // 3. PROJEKT 2: GENERATOR GRAFIKI (Canvas)
+        // ==========================================
+        function generateGraphicDemo() {
+            const canvas = document.getElementById('ai-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Tło
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Generowanie losowych kształtów geometrycznych (Symulacja wizualizacji AI)
+            const numShapes = 8 + Math.floor(Math.random() * 6);
+            for (let i = 0; i < numShapes; i++) {
+                ctx.beginPath();
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const radius = 10 + Math.random() * 30;
+                
+                const colors = ['#38bdf8', '#0284c7', '#4ade80', '#facc15', '#a855f7'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = randomColor;
+                ctx.globalAlpha = 0.6;
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Dodanie linii siatki
+            ctx.globalAlpha = 0.3;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.globalAlpha = 1.0;
+        }
+
+        // ==========================================
+        // 4. PROJEKT 3: GENERATOR DŹWIĘKU (Web Audio)
+        // ==========================================
+        function playAudioDemo() {
+            const status = document.getElementById('audio-status');
+            
+            try {
+                // Kontekst Audio
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) {
+                    status.textContent = "Twoja przeglądarka nie obsługuje Web Audio API.";
+                    return;
+                }
+
+                const audioCtx = new AudioContext();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                // Typ i częstotliwość dźwięku (prosty, przyjemny akord/ton)
+                oscillator.type = 'sine';
+                
+                // Losowanie prostej nuty (C4, E4, G4, C5)
+                const notes = [261.63, 329.63, 392.00, 523.25];
+                const selectedNote = notes[Math.floor(Math.random() * notes.length)];
+                oscillator.frequency.setValueAtTime(selectedNote, audioCtx.currentTime);
+
+                // Regulacja głośności i opadania (envelope)
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.6);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.6);
+
+                status.textContent = `🎵 Odtworzono ton wygenerowany przez AI (${Math.round(selectedNote)} Hz)`;
+                status.style.color = 'var(--success-color)';
+
+            } catch (e) {
+                status.textContent = "Nie udało się wygenerować dźwięku.";
+                status.style.color = 'var(--error-color)';
+            }
+        }
+
+        // ==========================================
+        // 5. OBSŁUGA MINIQUIZU
+        // ==========================================
+        function evaluateQuiz(event) {
+            event.preventDefault();
+
+            const answers = {
+                q1: 'a',
+                q2: 'a'
+            };
+
+            const form = event.target;
+            const userQ1 = form.q1.value;
+            const userQ2 = form.q2.value;
+
+            let score = 0;
+            if (userQ1 === answers.q1) score++;
+            if (userQ2 === answers.q2) score++;
+
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.style.display = 'block';
+
+            if (score === 2) {
+                resultDiv.className = 'result-success';
+                resultDiv.textContent = '🎉 Doskonale! Zdobyłeś 2/2 punkty. Przetwarzanie języka i Web Audio API nie mają przed Tobą tajemnic!';
+            } else if (score === 1) {
+                resultDiv.className = 'result-error';
+                resultDiv.textContent = '👍 Dobry wynik: 1/2 punkty. Przejrzyj sekcję FAQ i spróbuj ponownie!';
+            } else {
+                resultDiv.className = 'result-error';
+                resultDiv.textContent = '❌ Wynik: 0/2. Sprawdź FAQ i spróbuj jeszcze raz!';
+            }
+        }
+    </script>
+</body>
+</html>
